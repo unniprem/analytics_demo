@@ -30,3 +30,5 @@ curl 'http://localhost:4000/api/user_analytics?event_name=subscription_activated
 ```
 curl 'http://localhost:4000/api/event_analytics?event_name=subscription_activated&from=2024-01-02&to=2024-02-03'
 ```
+
+- Run `mix test` to run test cases
