@@ -15,6 +15,6 @@ defmodule AnalyticsDemo.Dashboard.Event do
   def changeset(event, attrs) do
     event
     |> cast(attrs, [:user_id, :event_time, :event_name, :attributes])
-    |> validate_required([:user_id, :event_time, :event_name])
+    |> validate_required([:user_id, :event_name])
   end
 end

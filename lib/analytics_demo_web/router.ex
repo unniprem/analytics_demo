@@ -7,11 +7,11 @@ defmodule AnalyticsDemoWeb.Router do
 
   scope "/api", AnalyticsDemoWeb do
     pipe_through :api
+    post "/events", EventController, :create
   end
 
   # Enable Swoosh mailbox preview in development
   if Application.compile_env(:analytics_demo, :dev_routes) do
-
     scope "/dev" do
       pipe_through [:fetch_session, :protect_from_forgery]
 

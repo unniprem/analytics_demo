@@ -50,6 +50,8 @@ defmodule AnalyticsDemo.Dashboard do
 
   """
   def create_event(attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{"event_time" => DateTime.utc_now()})
+
     %Event{}
     |> Event.changeset(attrs)
     |> Repo.insert()
