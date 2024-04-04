@@ -18,14 +18,14 @@ defmodule AnalyticsDemo.DashboardTest do
     test "create_event/1 with valid data creates a event" do
       valid_attrs = %{
         "attributes" => %{},
-        "user_id" => "some user_id",
+        "user_id" => "some_user_id",
         "event_time" => ~U[2024-04-03 12:38:00Z],
         "event_name" => "some event_name"
       }
 
       assert {:ok, %Event{} = event} = Dashboard.create_event(valid_attrs)
       assert event.attributes == %{}
-      assert event.user_id == "some user_id"
+      assert event.user_id == "some_user_id"
       assert event.event_time == ~U[2024-04-03 12:38:00Z]
       assert event.event_name == "some event_name"
     end

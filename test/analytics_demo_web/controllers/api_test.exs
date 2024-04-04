@@ -38,18 +38,18 @@ defmodule AnalyticsDemoWeb.ApiTest do
     assert json_response(conn, 422) == %{"errors" => %{"event_time" => ["is invalid"]}}
   end
 
-  # test "api to store an event when user pass user_id with special character",
-  #      %{conn: conn} do
-  #   conn =
-  #     post(conn, ~p"/api/events", %{
-  #       "user_id" => "user1@",
-  #       "event_name" => "subscription_activated",
-  #       "event_time" => "2024-04-01T12:00:00Z",
-  #       "attributes" => %{"plan" => "pro"}
-  #     })
+  test "api to store an event when user pass user_id with special character",
+       %{conn: conn} do
+    conn =
+      post(conn, ~p"/api/events", %{
+        "user_id" => "user@",
+        "event_name" => "subscription_activated",
+        "event_time" => "2024-04-01T12:00:00Z",
+        "attributes" => %{"plan" => "pro"}
+      })
 
-  #   assert json_response(conn, 422) == %{"errors" => %{"event_time" => ["is invalid"]}}
-  # end
+    assert json_response(conn, 422) == %{"errors" => %{"user_id" => ["has invalid format"]}}
+  end
 
   test "api to return list of users", %{conn: conn} do
     Dashboard.create_event(%{

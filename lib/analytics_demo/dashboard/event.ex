@@ -16,6 +16,6 @@ defmodule AnalyticsDemo.Dashboard.Event do
     event
     |> cast(attrs, [:user_id, :event_time, :event_name, :attributes])
     |> validate_required([:user_id, :event_name])
-    |> validate_format(:user_id, ~r/[A-Za-z0-9\._-]/)
+    |> validate_format(:user_id, ~r/^([A-Za-z0-9\._-])*$/)
   end
 end
