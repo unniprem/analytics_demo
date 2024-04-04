@@ -2,17 +2,31 @@
 
 To start your Phoenix server:
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+- Run `mix setup` to do initail setup
+- Run `mix phx.server` to run the application
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### To test the api run the following command in a terminal
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- To create new event
 
-## Learn more
+```
+curl -X POST 'http://localhost:4000/api/events?user_id=user_id1&event_name=subscription_activated'
+```
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- To return list of users
+
+```
+curl 'http://localhost:4000/api/user_analytics'
+```
+
+- To return list of users for a event
+
+```
+curl 'http://localhost:4000/api/user_analytics?event_name=subscription_activated'
+```
+
+- To return aggregated event counts over time
+
+```
+curl 'http://localhost:4000/api/event_analytics?event_name=subscription_activated&from=2024-01-02&to=2024-02-03'
+```
