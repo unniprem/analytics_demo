@@ -148,4 +148,101 @@ defmodule AnalyticsDemoWeb.ApiTest do
 
     assert json_response(conn, 200) == expected
   end
+
+  test "api to return list of events between 2024-04-01 to 2024-04-05", %{conn: conn} do
+    Dashboard.create_event(%{
+      "user_id" => "user1",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T12:00:00Z",
+      "attributes" => %{"plan" => "pro", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user1",
+      "event_name" => "subscription_deactivated",
+      "event_time" => "2024-04-02T14:00:00Z",
+      "attributes" => %{"plan" => "pro", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user2",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T12:00:00Z",
+      "attributes" => %{"plan" => "student", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user3",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T15:00:00Z",
+      "attributes" => %{"plan" => "mini", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user3",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-03T08:00:00Z",
+      "attributes" => %{"plan" => "proffesional", "billing_interval" => "monthly"}
+    })
+
+    conn = get(conn, ~p"/api/event_analytics", %{"from" => "2024-04-01", "to" => "2024-04-05"})
+
+    expected = %{
+      "data" => [
+        %{"count" => 3, "date" => "2024-04-01", "unique_count" => 3},
+        %{"count" => 1, "date" => "2024-04-02", "unique_count" => 1},
+        %{"count" => 1, "date" => "2024-04-03", "unique_count" => 1}
+      ]
+    }
+
+    assert json_response(conn, 200) == expected
+  end
+
+  test "api to return list of events between 2024-04-01 to 2024-04-05 when the event name is subscription deactivated",
+       %{conn: conn} do
+    Dashboard.create_event(%{
+      "user_id" => "user1",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T12:00:00Z",
+      "attributes" => %{"plan" => "pro", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user1",
+      "event_name" => "subscription_deactivated",
+      "event_time" => "2024-04-02T14:00:00Z",
+      "attributes" => %{"plan" => "pro", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user2",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T12:00:00Z",
+      "attributes" => %{"plan" => "student", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user3",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-01T15:00:00Z",
+      "attributes" => %{"plan" => "mini", "billing_interval" => "monthly"}
+    })
+
+    Dashboard.create_event(%{
+      "user_id" => "user3",
+      "event_name" => "subscription_activated",
+      "event_time" => "2024-04-03T08:00:00Z",
+      "attributes" => %{"plan" => "proffesional", "billing_interval" => "monthly"}
+    })
+
+    conn =
+      get(conn, ~p"/api/event_analytics", %{
+        "from" => "2024-04-01",
+        "to" => "2024-04-05",
+        "event_name" => "subscription_deactivated"
+      })
+
+    expected = %{"data" => [%{"count" => 1, "date" => "2024-04-02", "unique_count" => 1}]}
+    assert json_response(conn, 200) == expected
+  end
 end

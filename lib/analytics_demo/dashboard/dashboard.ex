@@ -106,7 +106,7 @@ defmodule AnalyticsDemo.Dashboard do
 
   def list_events_by_users(params \\ %{}) do
     Event
-    |> search_params(params)
+    |> search_event_params(params)
     |> select([e], %{
       user: e.user_id,
       event_count: count(e.event_name),
@@ -117,9 +117,54 @@ defmodule AnalyticsDemo.Dashboard do
     |> Repo.all()
   end
 
-  def search_params(query, %{"event_name" => event}) do
-    where(query, [e], e.event_name == ^event)
+  def search_event_params(query, %{"event_name" => event}) when event not in [nil, ""],
+    do: where(query, [e], e.event_name == ^event)
+
+  def search_event_params(query, _params), do: query
+
+  def list_events_per_date(params) do
+    with {:ok, from} <- verify_date(params, "from"),
+         {:ok, to} <- verify_date(params, "to"),
+         {:ok, dates} <- verify_from_is_greater_than_to(from, to) do
+      {:ok, list_events_per_date(dates, params)}
+    end
   end
 
-  def search_params(query, _params), do: query
+  def list_events_per_date(%{"from" => from, "to" => to}, params) do
+    Event
+    |> where(
+      [e],
+      fragment("date(?)", e.event_time) >= ^from and fragment("date(?)", e.event_time) <= ^to
+    )
+    |> search_event_params(params)
+    |> select([e], %{
+      date: fragment("date(?)", e.event_time),
+      count: count(e.event_name),
+      unique_count: count(e.user_id, :distinct)
+    })
+    |> group_by([e], fragment("date(?)", e.event_time))
+    |> order_by([e], asc: fragment("date(?)", e.event_time))
+    |> Repo.all()
+  end
+
+  def verify_date(params, key) do
+    Map.get(params, key, nil)
+    |> do_verify_date(key)
+  end
+
+  def do_verify_date(nil, key), do: {:error, "please enter valid #{key}"}
+
+  def do_verify_date(date, key) do
+    case Date.from_iso8601(date) do
+      {:ok, date} -> {:ok, date}
+      {:error, error} -> {:error, "error in #{key}: #{inspect(error)}"}
+    end
+  end
+
+  def verify_from_is_greater_than_to(from, to) do
+    case Date.compare(from, to) do
+      dt when dt in [:eq, :lt] -> {:ok, %{"from" => from, "to" => to}}
+      :gt -> {:error, "from must not be greater than to"}
+    end
+  end
 end
