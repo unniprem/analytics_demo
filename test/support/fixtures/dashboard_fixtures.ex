@@ -11,10 +11,10 @@ defmodule AnalyticsDemo.DashboardFixtures do
     {:ok, event} =
       attrs
       |> Enum.into(%{
-        attributes: %{},
-        event_name: "some event_name",
-        event_time: ~U[2024-04-03 12:38:00Z],
-        user_id: "some user_id"
+        "attributes" => %{},
+        "user_id" => "some user_id",
+        "event_time" => ~U[2024-04-03 12:38:00Z],
+        "event_name" => "some event_name"
       })
       |> AnalyticsDemo.Dashboard.create_event()
 
