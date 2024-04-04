@@ -103,4 +103,23 @@ defmodule AnalyticsDemo.Dashboard do
   def change_event(%Event{} = event, attrs \\ %{}) do
     Event.changeset(event, attrs)
   end
+
+  def list_events_by_users(params \\ %{}) do
+    Event
+    |> search_params(params)
+    |> select([e], %{
+      user: e.user_id,
+      event_count: count(e.event_name),
+      last_event_at: max(e.event_time)
+    })
+    |> group_by([e], :user_id)
+    |> order_by([e], desc: max(e.event_time))
+    |> Repo.all()
+  end
+
+  def search_params(query, %{"event_name" => event}) do
+    where(query, [e], e.event_name == ^event)
+  end
+
+  def search_params(query, _params), do: query
 end
