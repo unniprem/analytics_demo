@@ -21,4 +21,11 @@ defmodule AnalyticsDemoWeb.FallbackController do
     |> put_view(html: AnalyticsDemoWeb.ErrorHTML, json: AnalyticsDemoWeb.ErrorJSON)
     |> render(:"404")
   end
+
+  def call(conn, {:error, error}) do
+    conn
+    |> put_view(html: AnalyticsDemoWeb.ErrorHTML, json: AnalyticsDemoWeb.ErrorJSON)
+    |> put_status(400)
+    |> render("error.json", %{error: error})
+  end
 end

@@ -157,7 +157,7 @@ defmodule AnalyticsDemo.Dashboard do
   def do_verify_date(date, key) do
     case Date.from_iso8601(date) do
       {:ok, date} -> {:ok, date}
-      {:error, error} -> {:error, "error in #{key}: #{inspect(error)}"}
+      {:error, error} -> {:error, "error in #{key}: #{error}"}
     end
   end
 
